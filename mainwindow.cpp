@@ -27,6 +27,7 @@
 #include "TText.h"
 #include "TStyle.h"
 #include "TColor.h"
+#include "TMultiGraph.h"
 
 using namespace std;
 
@@ -69,19 +70,25 @@ void MainWindow::on_get_clicked()
 
 void MainWindow::get_module_info(string moduleName){
 	
+	  std::vector<MainWindow::MStaveR> para;
+	  std::vector<float> index;
 	  MStaveR para_reception, para_fast, para_HS, para_stave, para_qualification, para_staver;
 	  int fDatabasetype=0;
-
+      
 	  AlpideDB *theDB = new AlpideDB(fDatabasetype);
-	  para_reception=this->getMReceptionDB(theDB, moduleName,1);
-	  para_HS=this->getHSDB(theDB, moduleName,3);
-	  para_fast=this->getFastDB(theDB, moduleName,2);
-	  para_stave=this->getStaveDB(theDB, moduleName,4);
-	  para_qualification=this->getMQDB(theDB, moduleName,0);
-	  para_staver=this->getStaveRDB(theDB, moduleName,5);
-	  this->plot_pixel(para_qualification, para_reception, para_HS, para_stave, para_staver);
-	  this->plot_current(para_qualification,para_reception, para_fast, para_HS, para_stave, para_staver);
 	  
+	  for(int i=0; i<6; i++){
+		  para.push_back(this->getStaveRDB(theDB, moduleName,i));
+          index.push_back(i);
+		  
+	  }
+	  
+
+	  
+	 // this->plot_pixel(para_qualification, para_reception, para_HS, para_stave, para_staver);
+	  //this->plot_current(para_qualification,para_reception, para_fast, para_HS, para_stave, para_staver);
+	  this->addinfo(para);
+	  this->plot_current(para, index);
 	  
 	  delete theDB;
 	
@@ -279,6 +286,21 @@ void MainWindow::on_bad_pixels_clicked(){
 }
 
 
+void MainWindow::on_noisy_pixels_clicked(){
+    string modulename, pic;
+	modulename = ui->moduleID->toPlainText().toStdString().c_str();
+    pic = "Noisypix_"+modulename+".png";
+	QString qpic;  
+    qpic= QString::fromStdString(pic);
+
+	  QGraphicsScene* scene = new QGraphicsScene();
+	  QPixmap pixmap(qpic);
+	  scene->addPixmap(pixmap);
+	  ui->plot1->setScene(scene);
+	  ui->plot1->show();
+	
+}
+
 void MainWindow::on_current_clicked(){
 	
     string modulename, pic;
@@ -297,231 +319,101 @@ void MainWindow::on_current_clicked(){
 
 
 
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//get the module qualification
-//
-////////////////////////////////////////////////////////////////////////////////////////////////
-struct MainWindow::MStaveR MainWindow::getMQDB(AlpideDB *theDB, string hicname, const int index)
-{
-	QString idda,iddac, iddd,idddc, pixel, pixelth, thmax, thmin, noise, noisy, noisym, error;
-	MStaveR para=getmodulepara(theDB, hicname, index);
-	//cout<<para.error<<endl;
-	if (para.error!="No activities exit!"){
-	  idda= QString::fromStdString(to_string(para.IDDA));
-	  iddd= QString::fromStdString(to_string(para.IDDD));
-  	  iddac= QString::fromStdString(to_string(para.IDDAC));
-  	  idddc= QString::fromStdString(to_string(para.IDDDC));
-	  pixel= QString::fromStdString(to_string(para.pixels));
-  	  pixelth= QString::fromStdString(to_string(para.pixelsth));
-  	  thmax= QString::fromStdString(to_string(para.ThMax));
-  	  thmin= QString::fromStdString(to_string(para.ThMin));
-  	  noise= QString::fromStdString(to_string(para.Noise));
-  	  noisy= QString::fromStdString(to_string(para.Noisy));
-  	  noisym= QString::fromStdString(to_string(para.NoisyM));
-
-  	  
-  	  ui->info_0->setPlainText("IDDA = "+idda+" A");
-  	  ui->info_0->appendPlainText("IDDA clocked = "+iddac+" A"); // \n
-  	  ui->info_0->appendPlainText("IDDD = "+iddd+" A"); // \n
-  	  ui->info_0->appendPlainText("IDDD clocked = "+idddc+" A"); // \n
-  	  ui->info_0->appendPlainText("Bad pixels digital (nominal) = "+pixel+" ");
-  	  ui->info_0->appendPlainText("Bad pixels th (0 V) = "+pixelth+" ");
-  	  ui->info_0->appendPlainText("Maximum chip TH (0 V) = "+thmax+" ");
-  	  ui->info_0->appendPlainText("Minimum chip TH (0 V) = "+thmin+" ");
-  	  ui->info_0->appendPlainText("Average noise (0 V) = "+noise+" ");
-  	  ui->info_0->appendPlainText("Noisy Pixels (0 V) = "+noisy+" ");
-  	  ui->info_0->appendPlainText("Noisy Pixels masked (0 V) = "+noisym+" ");
-  	  
-  	  
-  	  
-	}else{
-  
-	  ui->info_0->setPlainText("No activities exit!");
-	}
-	return para;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//get the module reception
-//
-////////////////////////////////////////////////////////////////////////////////////////////////  
-struct MainWindow::MStaveR MainWindow::getMReceptionDB(AlpideDB *theDB, string hicname, const int index)
-{
-	QString idda,iddac, iddd,idddc, pixel, pixelth, thmax, thmin, noise, noisy, noisym, error;
-	MStaveR para=getmodulepara(theDB, hicname, index);
-	//cout<<para.error<<endl;
-	if (para.error!="No activities exit!"){
-	  idda= QString::fromStdString(to_string(para.IDDA));
-	  iddd= QString::fromStdString(to_string(para.IDDD));
-  	  iddac= QString::fromStdString(to_string(para.IDDAC));
-  	  idddc= QString::fromStdString(to_string(para.IDDDC));
-	  pixel= QString::fromStdString(to_string(para.pixels));
-  	  pixelth= QString::fromStdString(to_string(para.pixelsth));
-  	  thmax= QString::fromStdString(to_string(para.ThMax));
-  	  thmin= QString::fromStdString(to_string(para.ThMin));
-  	  noise= QString::fromStdString(to_string(para.Noise));
-  	  noisy= QString::fromStdString(to_string(para.Noisy));
-  	  noisym= QString::fromStdString(to_string(para.NoisyM));
-
-  	  
-  	  ui->info_1->setPlainText("IDDA = "+idda+" A");
-  	  ui->info_1->appendPlainText("IDDA clocked = "+iddac+" A"); // \n
-  	  ui->info_1->appendPlainText("IDDD = "+iddd+" A"); // \n
-  	  ui->info_1->appendPlainText("IDDD clocked = "+idddc+" A"); // \n
-  	  ui->info_1->appendPlainText("Bad pixels digital (nominal) = "+pixel+" ");
-  	  ui->info_1->appendPlainText("Bad pixels th (0 V) = "+pixelth+" ");
-  	  ui->info_1->appendPlainText("Maximum chip TH (0 V) = "+thmax+" ");
-  	  ui->info_1->appendPlainText("Minimum chip TH (0 V) = "+thmin+" ");
-  	  ui->info_1->appendPlainText("Average noise (0 V) = "+noise+" ");
-  	  ui->info_1->appendPlainText("Noisy Pixels (0 V) = "+noisy+" ");
-  	  ui->info_1->appendPlainText("Noisy Pixels masked (0 V) = "+noisym+" ");
-  	  
-  	  
-  	  
-	}else{
-  
-	  ui->info_1->setPlainText("No activities exit!");
-	}
-	return para;
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//get the fast power
-//
-////////////////////////////////////////////////////////////////////////////////////////////////
-  struct MainWindow::MStaveR MainWindow::getFastDB(AlpideDB *theDB, string hicname, const int index)
-  {
-  	QString idda,iddac, iddd,idddc, pixel, pixelth, thmax, thmin, noise, noisy, noisym, error;
-  	MStaveR para=getmodulepara(theDB, hicname, index);
-  	//cout<<para.error<<endl;
-  	if (para.error!="No activities exit!"){
-  	  idda= QString::fromStdString(to_string(para.IDDA));
-  	  iddd= QString::fromStdString(to_string(para.IDDD));
-    	  iddac= QString::fromStdString(to_string(para.IDDAC));
-    	  idddc= QString::fromStdString(to_string(para.IDDDC));
-  	  pixel= QString::fromStdString(to_string(para.pixels));
-    	  pixelth= QString::fromStdString(to_string(para.pixelsth));
-    	  thmax= QString::fromStdString(to_string(para.ThMax));
-    	  thmin= QString::fromStdString(to_string(para.ThMin));
-    	  noise= QString::fromStdString(to_string(para.Noise));
-    	  noisy= QString::fromStdString(to_string(para.Noisy));
-    	  noisym= QString::fromStdString(to_string(para.NoisyM));
-
-    	  
-    	  ui->info_2->setPlainText("IDDA = "+idda+" A");
-    	  ui->info_2->appendPlainText("IDDA clocked = "+iddac+" A"); // \n
-    	  ui->info_2->appendPlainText("IDDD = "+iddd+" A"); // \n
-    	  ui->info_2->appendPlainText("IDDD clocked = "+idddc+" A"); // \n
-    	  ui->info_2->appendPlainText("Bad pixels digital (nominal) = "+pixel+" ");
-    	  ui->info_2->appendPlainText("Bad pixels th (0 V) = "+pixelth+" ");
-    	  ui->info_2->appendPlainText("Maximum chip TH (0 V) = "+thmax+" ");
-    	  ui->info_2->appendPlainText("Minimum chip TH (0 V) = "+thmin+" ");
-    	  ui->info_2->appendPlainText("Average noise (0 V) = "+noise+" ");
-    	  ui->info_2->appendPlainText("Noisy Pixels (0 V) = "+noisy+" ");
-    	  ui->info_2->appendPlainText("Noisy Pixels masked (0 V) = "+noisym+" ");
-    	  
-    	  
-    	  
-  	}else{
-    
-  	  ui->info_2->setPlainText("No activities exit!");
-  	}
-  	return para;
-  }
-
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 //get the HS
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////
-struct MainWindow::MStaveR MainWindow::getHSDB(AlpideDB *theDB, string hicname, const int index)
+void MainWindow::addinfo(std::vector<MainWindow::MStaveR> para)
 {
-	QString idda,iddac, iddd,idddc, pixel, pixelth, thmax, thmin, noise, noisy, noisym, error;
-	MStaveR para=getmodulepara(theDB, hicname, index);
-	//cout<<para.error<<endl;
-	if (para.error!="No activities exit!"){
-	  idda= QString::fromStdString(to_string(para.IDDA));
-	  iddd= QString::fromStdString(to_string(para.IDDD));
-  	  iddac= QString::fromStdString(to_string(para.IDDAC));
-  	  idddc= QString::fromStdString(to_string(para.IDDDC));
-	  pixel= QString::fromStdString(to_string(para.pixels));
-  	  pixelth= QString::fromStdString(to_string(para.pixelsth));
-  	  thmax= QString::fromStdString(to_string(para.ThMax));
-  	  thmin= QString::fromStdString(to_string(para.ThMin));
-  	  noise= QString::fromStdString(to_string(para.Noise));
-  	  noisy= QString::fromStdString(to_string(para.Noisy));
-  	  noisym= QString::fromStdString(to_string(para.NoisyM));
-
-  	  
-  	  ui->info_3->setPlainText("IDDA = "+idda+" A");
-  	  ui->info_3->appendPlainText("IDDA clocked = "+iddac+" A"); // \n
-  	  ui->info_3->appendPlainText("IDDD = "+iddd+" A"); // \n
-  	  ui->info_3->appendPlainText("IDDD clocked = "+idddc+" A"); // \n
-  	  ui->info_3->appendPlainText("Bad pixels digital (nominal) = "+pixel+" ");
-  	  ui->info_3->appendPlainText("Bad pixels th (0 V) = "+pixelth+" ");
-  	  ui->info_3->appendPlainText("Maximum chip TH (0 V) = "+thmax+" ");
-  	  ui->info_3->appendPlainText("Minimum chip TH (0 V) = "+thmin+" ");
-  	  ui->info_3->appendPlainText("Average noise (0 V) = "+noise+" ");
-  	  ui->info_3->appendPlainText("Noisy Pixels (0 V) = "+noisy+" ");
-  	  ui->info_3->appendPlainText("Noisy Pixels masked (0 V) = "+noisym+" ");
-  	  
-  	  
+	if (para[0].error!="No activities exit!"){
+  	  ui->info_0->setPlainText("IDDA = "+QString::fromStdString(to_string(para[0].IDDA))+" A");
+  	  ui->info_0->appendPlainText("IDDA clocked = "+QString::fromStdString(to_string(para[0].IDDAC))+" A"); // \n
+  	  ui->info_0->appendPlainText("IDDD = "+QString::fromStdString(to_string(para[0].IDDD))+" A"); // \n
+  	  ui->info_0->appendPlainText("IDDD clocked = "+QString::fromStdString(to_string(para[0].IDDDC))+" A"); // \n
+  	  ui->info_0->appendPlainText("Bad pixels digital (nominal) = "+QString::fromStdString(to_string(para[0].pixels))+" ");
+  	  ui->info_0->appendPlainText("Bad pixels th (0 V) = "+QString::fromStdString(to_string(para[0].pixelsth))+" ");
+  	  ui->info_0->appendPlainText("Maximum chip TH (0 V) = "+QString::fromStdString(to_string(para[0].ThMax))+"e ");
+  	  ui->info_0->appendPlainText("Minimum chip TH (0 V) = "+QString::fromStdString(to_string(para[0].ThMin))+"e ");
+  	  ui->info_0->appendPlainText("Average noise (0 V) = "+QString::fromStdString(to_string(para[0].Noise))+"e ");
+  	  ui->info_0->appendPlainText("Noisy Pixels (0 V) = "+QString::fromStdString(to_string(para[0].Noisy))+" ");
+  	  ui->info_0->appendPlainText("Noisy Pixels masked (0 V) = "+QString::fromStdString(to_string(para[0].NoisyM))+" "); 	  
+	}else{
+	  ui->info_0->setPlainText("No activities exit!");
+	}
+	if (para[1].error!="No activities exit!"){
+  	  ui->info_1->setPlainText("IDDA = "+QString::fromStdString(to_string(para[1].IDDA))+" A");
+  	  ui->info_1->appendPlainText("IDDA clocked = "+QString::fromStdString(to_string(para[1].IDDAC))+" A"); // \n
+  	  ui->info_1->appendPlainText("IDDD = "+QString::fromStdString(to_string(para[1].IDDD))+" A"); // \n
+  	  ui->info_1->appendPlainText("IDDD clocked = "+QString::fromStdString(to_string(para[1].IDDDC))+" A"); // \n
+  	  ui->info_1->appendPlainText("Bad pixels digital (nominal) = "+QString::fromStdString(to_string(para[1].pixels))+" ");
+  	  ui->info_1->appendPlainText("Bad pixels th (0 V) = "+QString::fromStdString(to_string(para[1].pixelsth))+" ");
+  	  ui->info_1->appendPlainText("Maximum chip TH (0 V) = "+QString::fromStdString(to_string(para[1].ThMax))+"e ");
+  	  ui->info_1->appendPlainText("Minimum chip TH (0 V) = "+QString::fromStdString(to_string(para[1].ThMin))+"e ");
+  	  ui->info_1->appendPlainText("Average noise (0 V) = "+QString::fromStdString(to_string(para[1].Noise))+"e ");
+  	  ui->info_1->appendPlainText("Noisy Pixels (0 V) = "+QString::fromStdString(to_string(para[1].Noisy))+" ");
+  	  ui->info_1->appendPlainText("Noisy Pixels masked (0 V) = "+QString::fromStdString(to_string(para[1].NoisyM))+" "); 	  
+	}else{
+	  ui->info_1->setPlainText("No activities exit!");
+	}
+	if (para[5].error!="No activities exit!"){
+  	  ui->info_2->setPlainText("IDDA = "+QString::fromStdString(to_string(para[5].IDDA))+" A");
+  	  ui->info_2->appendPlainText("IDDA clocked = "+QString::fromStdString(to_string(para[5].IDDAC))+" A"); // \n
+  	  ui->info_2->appendPlainText("IDDD = "+QString::fromStdString(to_string(para[5].IDDD))+" A"); // \n
+  	  ui->info_2->appendPlainText("IDDD clocked = "+QString::fromStdString(to_string(para[5].IDDDC))+" A"); // \n
   	  
 	}else{
-  
+	  ui->info_2->setPlainText("No activities exit!");
+	}
+	if (para[2].error!="No activities exit!"){
+  	  ui->info_3->setPlainText("IDDA = "+QString::fromStdString(to_string(para[2].IDDA))+" A");
+  	  ui->info_3->appendPlainText("IDDA clocked = "+QString::fromStdString(to_string(para[2].IDDAC))+" A"); // \n
+  	  ui->info_3->appendPlainText("IDDD = "+QString::fromStdString(to_string(para[2].IDDD))+" A"); // \n
+  	  ui->info_3->appendPlainText("IDDD clocked = "+QString::fromStdString(to_string(para[2].IDDDC))+" A"); // \n
+  	  ui->info_3->appendPlainText("Bad pixels digital (nominal) = "+QString::fromStdString(to_string(para[2].pixels))+" ");
+  	  ui->info_3->appendPlainText("Bad pixels th (0 V) = "+QString::fromStdString(to_string(para[2].pixelsth))+" ");
+  	  ui->info_3->appendPlainText("Maximum chip TH (0 V) = "+QString::fromStdString(to_string(para[2].ThMax))+"e ");
+  	  ui->info_3->appendPlainText("Minimum chip TH (0 V) = "+QString::fromStdString(to_string(para[2].ThMin))+"e ");
+  	  ui->info_3->appendPlainText("Average noise (0 V) = "+QString::fromStdString(to_string(para[2].Noise))+"e ");
+  	  ui->info_3->appendPlainText("Noisy Pixels (0 V) = "+QString::fromStdString(to_string(para[2].Noisy))+" ");
+  	  ui->info_3->appendPlainText("Noisy Pixels masked (0 V) = "+QString::fromStdString(to_string(para[2].NoisyM))+" "); 	  
+	}else{
 	  ui->info_3->setPlainText("No activities exit!");
 	}
-	return para;
-}
-
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////////
-//get the stave qualification
-////////////////////////////////////////////////////////////////////////////////////////////////
-struct MainWindow::MStaveR MainWindow::getStaveDB(AlpideDB *theDB, string hicname, const int index)
-{
-	QString idda,iddac, iddd,idddc, pixel, pixelth, thmax, thmin, noise, noisy, noisym, error;
-	MStaveR para=getmodulepara(theDB, hicname, index);
-	//cout<<para.error<<endl;
-	if (para.error!="No activities exit!"){
-	  idda= QString::fromStdString(to_string(para.IDDA));
-	  iddd= QString::fromStdString(to_string(para.IDDD));
-  	  iddac= QString::fromStdString(to_string(para.IDDAC));
-  	  idddc= QString::fromStdString(to_string(para.IDDDC));
-	  pixel= QString::fromStdString(to_string(para.pixels));
-  	  pixelth= QString::fromStdString(to_string(para.pixelsth));
-  	  thmax= QString::fromStdString(to_string(para.ThMax));
-  	  thmin= QString::fromStdString(to_string(para.ThMin));
-  	  noise= QString::fromStdString(to_string(para.Noise));
-  	  noisy= QString::fromStdString(to_string(para.Noisy));
-  	  noisym= QString::fromStdString(to_string(para.NoisyM));
-
-  	  
-  	  ui->info_4->setPlainText("IDDA = "+idda+" A");
-  	  ui->info_4->appendPlainText("IDDA clocked = "+iddac+" A"); // \n
-  	  ui->info_4->appendPlainText("IDDD = "+iddd+" A"); // \n
-  	  ui->info_4->appendPlainText("IDDD clocked = "+idddc+" A"); // \n
-  	  ui->info_4->appendPlainText("Bad pixels digital (nominal) = "+pixel+" ");
-  	  ui->info_4->appendPlainText("Bad pixels th (0 V) = "+pixelth+" ");
-  	  ui->info_4->appendPlainText("Maximum chip TH (0 V) = "+thmax+" ");
-  	  ui->info_4->appendPlainText("Minimum chip TH (0 V) = "+thmin+" ");
-  	  ui->info_4->appendPlainText("Average noise (0 V) = "+noise+" ");
-  	  ui->info_4->appendPlainText("Noisy Pixels (0 V) = "+noisy+" ");
-  	  ui->info_4->appendPlainText("Noisy Pixels masked (0 V) = "+noisym+" ");
-  	  
-  	  
-  	  
+	if (para[3].error!="No activities exit!"){
+  	  ui->info_4->setPlainText("IDDA = "+QString::fromStdString(to_string(para[3].IDDA))+" A");
+  	  ui->info_4->appendPlainText("IDDA clocked = "+QString::fromStdString(to_string(para[3].IDDAC))+" A"); // \n
+  	  ui->info_4->appendPlainText("IDDD = "+QString::fromStdString(to_string(para[3].IDDD))+" A"); // \n
+  	  ui->info_4->appendPlainText("IDDD clocked = "+QString::fromStdString(to_string(para[3].IDDDC))+" A"); // \n
+  	  ui->info_4->appendPlainText("Bad pixels digital (nominal) = "+QString::fromStdString(to_string(para[3].pixels))+" ");
+  	  ui->info_4->appendPlainText("Bad pixels th (0 V) = "+QString::fromStdString(to_string(para[3].pixelsth))+" ");
+  	  ui->info_4->appendPlainText("Maximum chip TH (0 V) = "+QString::fromStdString(to_string(para[3].ThMax))+"e ");
+  	  ui->info_4->appendPlainText("Minimum chip TH (0 V) = "+QString::fromStdString(to_string(para[3].ThMin))+"e ");
+  	  ui->info_4->appendPlainText("Average noise (0 V) = "+QString::fromStdString(to_string(para[3].Noise))+"e ");
+  	  ui->info_4->appendPlainText("Noisy Pixels (0 V) = "+QString::fromStdString(to_string(para[3].Noisy))+" ");
+  	  ui->info_4->appendPlainText("Noisy Pixels masked (0 V) = "+QString::fromStdString(to_string(para[3].NoisyM))+" "); 	  
 	}else{
-  
 	  ui->info_4->setPlainText("No activities exit!");
 	}
-	return para;
+	if (para[4].error!="No activities exit!"){
+  	  ui->info_5->setPlainText("IDDA = "+QString::fromStdString(to_string(para[4].IDDA))+" A");
+  	  ui->info_5->appendPlainText("IDDA clocked = "+QString::fromStdString(to_string(para[4].IDDAC))+" A"); // \n
+  	  ui->info_5->appendPlainText("IDDD = "+QString::fromStdString(to_string(para[4].IDDD))+" A"); // \n
+  	  ui->info_5->appendPlainText("IDDD clocked = "+QString::fromStdString(to_string(para[4].IDDDC))+" A"); // \n
+  	  ui->info_5->appendPlainText("Bad pixels digital (nominal) = "+QString::fromStdString(to_string(para[4].pixels))+" ");
+  	  ui->info_5->appendPlainText("Bad pixels th (0 V) = "+QString::fromStdString(to_string(para[4].pixelsth))+" ");
+  	  ui->info_5->appendPlainText("Maximum chip TH (0 V) = "+QString::fromStdString(to_string(para[4].ThMax))+"e ");
+  	  ui->info_5->appendPlainText("Minimum chip TH (0 V) = "+QString::fromStdString(to_string(para[4].ThMin))+"e ");
+  	  ui->info_5->appendPlainText("Average noise (0 V) = "+QString::fromStdString(to_string(para[4].Noise))+"e ");
+  	  ui->info_5->appendPlainText("Noisy Pixels (0 V) = "+QString::fromStdString(to_string(para[4].Noisy))+" ");
+  	  ui->info_5->appendPlainText("Noisy Pixels masked (0 V) = "+QString::fromStdString(to_string(para[4].NoisyM))+" "); 	  
+	}else{
+	  ui->info_5->setPlainText("No activities exit!");
+	}
 }
+
+
 
 
 struct MainWindow::MStaveR MainWindow::getmodulepara(AlpideDB *theDB, string hicname, const int index){
@@ -541,16 +433,16 @@ struct MainWindow::MStaveR MainWindow::getmodulepara(AlpideDB *theDB, string hic
 	    		ActivityTypeID=681;
 	    		break;
 	    	case 2:     		
-	    		ActivityTypeID=801;
-	    		break;
-	    	case 3:     		
 	    		ActivityTypeID=881;
 	    		break;
-	    	case 4:     		
+	    	case 3:     		
 	    		ActivityTypeID=1141;
 	    		break;
-	    	case 5:     		
+	    	case 4:     		
 	    		ActivityTypeID=1201;
+	    		break;
+	    	case 5:     		
+	    		ActivityTypeID=801;
 	    		break;	    		       	    		
 	    		
 	    	default:
@@ -637,173 +529,205 @@ struct MainWindow::MStaveR MainWindow::getStaveRDB(AlpideDB *theDB, string hicna
 {
 	QString idda,iddac, iddd,idddc, pixel, pixelth, thmax, thmin, noise, noisy, noisym, error;
 	MStaveR para=getmodulepara(theDB, hicname, index);
-	//cout<<para.error<<endl;
-	if (para.error!="No activities exit!"){
-	  idda= QString::fromStdString(to_string(para.IDDA));
-	  iddd= QString::fromStdString(to_string(para.IDDD));
-  	  iddac= QString::fromStdString(to_string(para.IDDAC));
-  	  idddc= QString::fromStdString(to_string(para.IDDDC));
-	  pixel= QString::fromStdString(to_string(para.pixels));
-  	  pixelth= QString::fromStdString(to_string(para.pixelsth));
-  	  thmax= QString::fromStdString(to_string(para.ThMax));
-  	  thmin= QString::fromStdString(to_string(para.ThMin));
-  	  noise= QString::fromStdString(to_string(para.Noise));
-  	  noisy= QString::fromStdString(to_string(para.Noisy));
-  	  noisym= QString::fromStdString(to_string(para.NoisyM));
-
-  	  
-  	  ui->info_5->setPlainText("IDDA = "+idda+" A");
-  	  ui->info_5->appendPlainText("IDDA clocked = "+iddac+" A"); // \n
-  	  ui->info_5->appendPlainText("IDDD = "+iddd+" A"); // \n
-  	  ui->info_5->appendPlainText("IDDD clocked = "+idddc+" A"); // \n
-  	  ui->info_5->appendPlainText("Bad pixels digital (nominal) = "+pixel+" ");
-  	  ui->info_5->appendPlainText("Bad pixels th (0 V) = "+pixelth+" ");
-  	  ui->info_5->appendPlainText("Maximum chip TH (0 V) = "+thmax+" ");
-  	  ui->info_5->appendPlainText("Minimum chip TH (0 V) = "+thmin+" ");
-  	  ui->info_5->appendPlainText("Average noise (0 V) = "+noise+" ");
-  	  ui->info_5->appendPlainText("Noisy Pixels (0 V) = "+noisy+" ");
-  	  ui->info_5->appendPlainText("Noisy Pixels masked (0 V) = "+noisym+" ");
-  	  
-  	  
-  	  
-	}else{
-  
-	  ui->info_5->setPlainText("No activities exit!");
-	}
 	return para;
 }
 
 
-//draw plots of bad pixels
-void MainWindow::plot_pixel(MStaveR qual, MStaveR reception, MStaveR half, MStaveR stave, MStaveR staver){
+
+
+
+void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector<float> index){
 	
 	  //Draw graphs
-	  TCanvas *c1 = new TCanvas("pixel","pixel",200,10,700,500);
-	  int n=5;
-	  //int x[n], y[n];
-      int x[n]={1,2,3,4,5};
-	  int y[n]={qual.pixels, reception.pixels, half.pixels, stave.pixels, staver.pixels};
-	  
-	  TGraph* plot = new TGraph(n,x,y);
-	  
-	  
-	  plot->GetXaxis()->SetTitle("Test ");
-  ////spectrum->GetXaxis()->SetRangeUser(0,1024);
-	  plot->GetYaxis()->SetTitle("Pixel numbers");
-  ////spectrum->GetYaxis()->SetTitleOffset(1.65);
-	  plot->SetTitle("Bad pixels");
-      plot->SetLineColor(4);
-      plot->SetLineWidth(3);
 
-	  
-	  plot->Draw();
-	  //c1->SaveAs("Badpix_"+reception.name+".png");
-	  string name="Badpix_"+reception.name+".png";
-	  const char* cname = name.c_str();
-	  c1->SaveAs(cname);
+	  int size_p = int(index.size())-1;
+	  float idda[size_p], iddd[size_p], iddac[size_p], idddc[size_p], pixels[size_p], pixelsth[size_p], noisy[size_p], noisym[size_p];
+	  float n[size_p];
 
-	
-}
-
-
-void MainWindow::plot_current(MStaveR qual, MStaveR reception, MStaveR fast, MStaveR half, MStaveR stave, MStaveR staver){
-	
-	  //Draw graphs
-	  TCanvas *c1 = new TCanvas("pixel","pixel",200,10,700,500);
-	  int n=5;
-	  //int x[n], y[n];
-      float x[n]={1,2,3,4,5};
-	  float y[n]={qual.IDDA, reception.IDDA,  half.IDDA, stave.IDDA, staver.IDDA};
-	  float y1[n]={qual.IDDD, reception.IDDD, half.IDDD, stave.IDDD, staver.IDDD};
-	 
+	  for(int i=0; i<size_p; i++){
+		  
+		  idda[i]=data[i].IDDA;
+		  iddd[i]=data[i].IDDD;
+		  iddac[i]=data[i].IDDAC;
+		  idddc[i]=data[i].IDDDC;
+		  pixels[i]=data[i].pixels;
+		  pixelsth[i]=data[i].pixelsth;
+		  noisy[i]=data[i].Noisy;
+		  noisym[i]=data[i].NoisyM;
+		  n[i]=index[i]+1;
+	  }
 	  
-	  //int k=3;
+	  TCanvas *c1 = new TCanvas("pixel","pixel",20,10,700,500);
 	  
-	  //float xc[n]={1,2,3};
-	  float yc[n]={qual.IDDAC, reception.IDDAC, half.IDDAC, stave.IDDAC, staver.IDDAC};
-	  float yc1[n]={qual.IDDDC, reception.IDDDC, half.IDDDC, stave.IDDDC, staver.IDDDC};
-	  
-	  //cout<<"title: "<<reception.name<<endl;
-	  
-	  string title= "Currents of "+reception.name;
-	  const char* ctitle=title.c_str();
-	  TGraph* plot = new TGraph(n,x,y);
-	  TGraph* plot1 = new TGraph(n,x,y1);
-	  TGraph* plot2 = new TGraph(n,x,yc);
-	  TGraph* plot3 = new TGraph(n,x,yc1);
-      plot->GetYaxis()->SetRangeUser(-0.1,1.3);
-      plot->GetXaxis()->SetRangeUser(-0.1,5.9);
-      
-
-	  plot->GetXaxis()->SetTitle("Test ");
-  ////spectrum->GetXaxis()->SetRangeUser(0,1024);
-	  plot->GetYaxis()->SetTitle("I (A)");
-  ////spectrum->GetYaxis()->SetTitleOffset(1.65);
-	  plot->SetTitle(ctitle);
-      plot->SetLineColor(4);
-      plot->SetLineWidth(2);
-      
-      
+	   TMultiGraph *mg = new TMultiGraph();
+	   
+	  //const char* ctitle=("Currents of "+data[0].name).c_str();
+	 // cout<<ctitle<<endl;
+	  TGraph* plot = new TGraph(size_p,n, idda);
 	  //plot->SetTitle(ctitle);
- 
-	  
-	  plot->Draw();
-	  
-      plot1->SetLineColor(3);
-      plot1->SetLineWidth(2); 
-	  
-	  plot1->Draw("LP");
+	  TGraph* plot1 = new TGraph(size_p,n, iddd);
+	  TGraph* plot2 = new TGraph(size_p, n, iddac);
+	  TGraph* plot3 = new TGraph(size_p, n, idddc);
+      
+      
 
+
+	  plot->SetMarkerColor(4);
+	  plot->SetMarkerSize(1);
+	  plot->SetMarkerStyle(21);
+      //plot->SetLineColor(4);
+      //plot->SetLineWidth(2);	  
+	 // plot->Draw();
+	  plot1->SetMarkerColor(3);
+	  plot1->SetMarkerSize(1);
+	  plot1->SetMarkerStyle(21);
+      //plot1->SetLineWidth(2); 
+	  //plot1->Draw("same");
+      plot2->SetMarkerColor(2);
+	  plot2->SetMarkerSize(1);
+	  plot2->SetMarkerStyle(21);
+      //plot2->SetLineWidth(2); 
+	  //plot2->Draw("P");
+      plot3->SetMarkerColor(1);
+	  plot3->SetMarkerSize(1);
+	  plot3->SetMarkerStyle(21);
+      //plot3->SetLineWidth(2); 
+	 // plot3->SetTitle(ctitle);
+
+	  //plot3->Draw("P");
 	  
-	  //plot->Draw();
-	  
-      plot2->SetLineColor(2);
-      plot2->SetLineWidth(2); 
-	  
-	  plot2->Draw("LP");
-	  
-      plot3->SetLineColor(1);
-      plot3->SetLineWidth(2); 
-	  
-	  plot3->Draw("LP");
-	  
+      mg->Add(plot);
+      mg->Add(plot1);
+      mg->Add(plot2);
+      mg->Add(plot3);
+      mg->Draw("AP");
+      mg->SetTitle(("Currents of "+data[0].name).c_str());
+      mg->GetYaxis()->SetRangeUser(-0.1,1.3);
+      mg->GetXaxis()->SetRangeUser(-0.1,5.9);
+	  //mg->GetXaxis()->SetTitle("Test ");
+	  mg->GetYaxis()->SetTitle("I (A)");
+      
+      
 	  TText *t = new TText();
-	//  t->SetTextAlign(22);
-	  //
-
 	  t->SetTextFont(1);
 	  t->SetTextSize(0.025);
-	  t->DrawText(0.8, -0.1, "Qualification");
-	  t->DrawText(1.8, -0.1, "Reception");
-	  //t->DrawText(2.8, -0.1, "Fast power");
-	  t->DrawText(2.8, -0.1, "HS");
+	  t->DrawText(0.8, -0.2, "Qualification");
+	  t->DrawText(1.8, -0.2, "Reception");
+	  t->DrawText(2.95, -0.2, "HS");
+	  t->DrawText(3.9, -0.2, "Stave");
+	  t->DrawText(4.9, -0.2, "StaveR");
 	  
-	  //t->Draw();
-
+	  
 	  auto legend = new TLegend(0.1,0.75,0.3,0.9);
 	  // legend->SetHeader("The Legend Title","C"); // option "C" allows to center the header
-	  legend->AddEntry(plot,"IDDA configured","l");
-	  legend->AddEntry(plot1,"IDDD configured","l");
-	  legend->AddEntry(plot2,"IDDA clocked","l");
-	  legend->AddEntry(plot3,"IDDD clocked","l");
-	   
-
-	   //plot3->GetXaxis()->SetBinLabel(2,"R");
-	   
+	  legend->AddEntry(plot,"IDDA configured","P");
+	  legend->AddEntry(plot1,"IDDD configured","P");
+	  legend->AddEntry(plot2,"IDDA clocked","P");
+	  legend->AddEntry(plot3,"IDDD clocked","P");
       legend->Draw();
 	  
-
-	  
-	  
-	  string name="Current_"+reception.name+".png";
-	  const char* cname = name.c_str();
+      
+      
+	  //string name="Current_"+data[0].name+".png";
+      const char* cname = ("Current_"+data[0].name+".png").c_str();
 	  c1->SaveAs(cname);
-	
+	  
+	  delete plot, plot1, plot2, plot3;
 
-	
+	  //pixels plots
+	  TCanvas *c2 = new TCanvas("Badpix","Badpix",20,10,700,500);
+	  TMultiGraph *mg1 = new TMultiGraph();
+
+	  TGraph* plot4 = new TGraph(size_p,n, pixels);
+	  TGraph* plot5 = new TGraph(size_p,n, pixelsth);	  
+      plot4->SetMarkerColor(2);
+	  plot4->SetMarkerSize(1);
+	  plot4->SetMarkerStyle(21);
+      plot5->SetMarkerColor(3);
+	  plot5->SetMarkerSize(1);
+	  plot5->SetMarkerStyle(21);
+
+	  
+	  mg1->Add(plot4);
+	  mg1->Add(plot5);
+	  mg1->Draw("AP");
+	  mg1->SetTitle(("Bad pixels of "+data[0].name).c_str());
+
+	  mg1->GetXaxis()->SetRangeUser(-0.1,5.9);
+	  mg1->GetYaxis()->SetRangeUser(pixelsth[0]-1000,pixelsth[0]+1000);
+      mg1->GetYaxis()->SetTitle("Pixels");
+
+	  TText *t1 = new TText();
+	  t1->SetTextFont(1);
+	  t1->SetTextSize(0.025);
+	  t1->DrawText(0.8, pixelsth[0]-1150, "Qualification");
+	  t1->DrawText(1.8, pixelsth[0]-1150, "Reception");
+	  t1->DrawText(2.95, pixelsth[0]-1150, "HS");
+	  t1->DrawText(3.9, pixelsth[0]-1150, "Stave");
+	  t1->DrawText(4.9, pixelsth[0]-1150, "StaveR");
+      
+	  auto legend1 = new TLegend(0.1,0.75,0.5,0.9);
+	  // legend->SetHeader("The Legend Title","C"); // option "C" allows to center the header
+	  legend1->AddEntry(plot4,"Bad pixels of digital (nominal)","P");
+	  legend1->AddEntry(plot5,"Bad pixels of th (0 V)","P");
+	  
+      legend1->Draw();
+	  
+	  //string name="Current_"+data[0].name+".png";
+      const char* cname1 = ("Badpix_"+data[0].name+".png").c_str();
+	  c2->SaveAs(cname1);
+	  delete plot4, plot5;
+	  
+	  
+	  
+	  //hot pixels plots
+	  	  TCanvas *c3 = new TCanvas("Noisypix","Noisypix",20,10,700,500);
+	  	  TMultiGraph *mg2 = new TMultiGraph();
+
+	  	  TGraph* plot6 = new TGraph(size_p,n, noisy);
+	  	  TGraph* plot7 = new TGraph(size_p,n, noisym);	  
+	        plot6->SetMarkerColor(2);
+	  	  plot6->SetMarkerSize(1);
+	  	  plot6->SetMarkerStyle(21);
+	        plot7->SetMarkerColor(3);
+	  	  plot7->SetMarkerSize(1);
+	  	  plot7->SetMarkerStyle(21);
+
+	  	  
+	  	  mg2->Add(plot6);
+	  	  mg2->Add(plot7);
+	  	  mg2->Draw("AP");
+	  	  mg2->SetTitle(("Noisy pixels of "+data[0].name).c_str());
+
+	  	  mg2->GetXaxis()->SetRangeUser(-0.1,5.9);
+	  	  mg2->GetYaxis()->SetRangeUser(0,noisy[0]+50);
+	      mg2->GetYaxis()->SetTitle("Pixels");
+
+	  	  TText *t2 = new TText();
+	  	  t2->SetTextFont(1);
+	  	  t2->SetTextSize(0.025);
+	  	  t2->DrawText(0.8, -(noisy[0]+50)*0.1, "Qualification");
+	  	  t2->DrawText(1.8, -(noisy[0]+50)*0.1, "Reception");
+	  	  t2->DrawText(2.95, -(noisy[0]+50)*0.1, "HS");
+	  	  t2->DrawText(3.9, -(noisy[0]+50)*0.1, "Stave");
+	  	  t2->DrawText(4.9, -(noisy[0]+50)*0.1, "StaveR");
+	        
+	  	  auto legend2 = new TLegend(0.1,0.75,0.5,0.9);
+	  	  // legend->SetHeader("The Legend Title","C"); // option "C" allows to center the header
+	  	  legend2->AddEntry(plot6,"Noisy pixels before mask","P");
+	  	  legend2->AddEntry(plot7,"Noisy pixels masked","P");
+	  	  
+	        legend2->Draw();
+	  	  
+	  	  //string name="Current_"+data[0].name+".png";
+	        const char* cname2 = ("Noisypix_"+data[0].name+".png").c_str();
+	  	  c3->SaveAs(cname2);
+	  	  delete plot6, plot7;
+	  	  
+	  	  	  
+	  
+	  
 }
-
-
 
 
 
@@ -1011,10 +935,10 @@ void MainWindow::stave_parameters(string stavename){
 	for(int i = 0; i<moduleName.size(); i++){
 	//para_staver.push_back(this->getStaveRDB(theDB, moduleName[i], 5));
 		if (ui->comboBox_option->currentIndex()==0){
-			para_staver.push_back(this->getStaveDB(theDB, moduleName[i],4));
+			para_staver.push_back(this->getStaveRDB(theDB, moduleName[i],4));
 			stavenamed=stavename+"_Qualification";
 		}else{
-			para_staver.push_back(this->getStaveDB(theDB, moduleName[i],5));
+			para_staver.push_back(this->getStaveRDB(theDB, moduleName[i],5));
 			stavenamed=stavename+"_Reception";
 		}
 	ui->progressBar->setValue(i+1);
@@ -1025,10 +949,10 @@ void MainWindow::stave_parameters(string stavename){
 	
 	////////plot badpix
 	set_plot_style();
-	TCanvas *c1 = new TCanvas("Stave","Stave Map",20,10,1000,400);
+	TCanvas *c1 = new TCanvas("Stave1","Stave Map",20,10,1000,400);
 	c1->Divide(1,2);
-	TH2F *pixelsm = new TH2F ("Badpix", "Bad Pixels Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
-	TH1F *pixelsh = new TH1F ("Badpix", "Bad Pixels", 200, 0, 50000);
+	TH2F *pixelsm = new TH2F ("Badpix map", "Bad Pixels Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
+	TH1F *pixelsh = new TH1F ("Badpix histo", "Bad Pixels", 200, 0, 50000);
 
 	for(int i=0; i<para_staver.size(); i++){
 		pixelsh->Fill(para_staver[i].pixels);  
@@ -1039,7 +963,6 @@ void MainWindow::stave_parameters(string stavename){
 		  } 
 	}
 	
-	
 	c1->cd(1);	  
 	pixelsm->Draw("COLZ");
 	 //gStyle->SetOptStat (kFALSE);
@@ -1049,13 +972,13 @@ void MainWindow::stave_parameters(string stavename){
 	string name="Bad_Pixels_"+stavenamed+".png";
 	const char* cname = name.c_str();
 	c1->SaveAs(cname);
-	
+	delete pixelsm, pixelsh;
 	////////plot th max
 		//set_plot_style();
-		TCanvas *c2 = new TCanvas("Stave","Stave Map",20,10,1000,400);
+		TCanvas *c2 = new TCanvas("Stave2","Stave Map",20,10,1000,400);
 		c2->Divide(1,2);
-		TH2F *thmaxm = new TH2F ("THMax", "Maximum chip TH Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
-		TH1F *thmaxh = new TH1F ("THMax", "Maximum chip TH", 200, 0, 200);
+		TH2F *thmaxm = new TH2F ("THMax map", "Maximum chip TH Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
+		TH1F *thmaxh = new TH1F ("THMax histo", "Maximum chip TH", 200, 0, 200);
 
 		for(int i=0; i<para_staver.size(); i++){
 			thmaxh->Fill(para_staver[i].ThMax);  
@@ -1076,13 +999,13 @@ void MainWindow::stave_parameters(string stavename){
 		string name1="Max_CHIP_TH_"+stavenamed+".png";
 		const char* cname1 = name1.c_str();
 		c2->SaveAs(cname1);
-
+		delete thmaxm, thmaxh;
 		////////plot th min
 			//set_plot_style();
-			TCanvas *c3 = new TCanvas("Stave","Stave Map",20,10,1000,400);
+			TCanvas *c3 = new TCanvas("Stave3","Stave Map",20,10,1000,400);
 			c3->Divide(1,2);
-			TH2F *thminm = new TH2F ("THMin", "Minimum chip TH Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
-			TH1F *thminh = new TH1F ("THMin", "Minimum chip TH", 200, 0, 200);
+			TH2F *thminm = new TH2F ("THMin map", "Minimum chip TH Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
+			TH1F *thminh = new TH1F ("THMin histo", "Minimum chip TH", 200, 0, 200);
 
 			for(int i=0; i<para_staver.size(); i++){
 				thminh->Fill(para_staver[i].ThMin);  
@@ -1103,15 +1026,15 @@ void MainWindow::stave_parameters(string stavename){
 			string name2="Min_CHIP_TH_"+stavenamed+".png";
 			const char* cname2 = name2.c_str();
 			c3->SaveAs(cname2);		
-	
+			delete thminm, thminh;
 	
 			
 			////////plot noise
 						//set_plot_style();
-			TCanvas *c4 = new TCanvas("Stave","Stave Map",20,10,1000,400);
+			TCanvas *c4 = new TCanvas("Stave4","Stave Map",20,10,1000,400);
 			c4->Divide(1,2);
-			TH2F *noisem = new TH2F ("Noise", "Noise Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
-			TH1F *noiseh = new TH1F ("Noise", "Noise TH", 500, 0, 50);
+			TH2F *noisem = new TH2F ("Noise map", "Noise Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
+			TH1F *noiseh = new TH1F ("Noise histo", "Noise TH", 500, 0, 50);
 			
 			for(int i=0; i<para_staver.size(); i++){
 				noiseh->Fill(para_staver[i].Noise);  
@@ -1132,13 +1055,14 @@ void MainWindow::stave_parameters(string stavename){
 			string name3="Noise_"+stavenamed+".png";
 			const char* cname3 = name3.c_str();
 			c4->SaveAs(cname3);		
+			delete noisem, noiseh;
 			
 			////////plot noisy
 						//set_plot_style();
-			TCanvas *c5 = new TCanvas("Stave","Stave Map",20,10,1000,400);
+			TCanvas *c5 = new TCanvas("Stave5","Stave Map",20,10,1000,400);
 			c5->Divide(1,2);
-			TH2F *noisym = new TH2F ("Noisy", "Noisy Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
-			TH1F *noisyh = new TH1F ("Noisy", "Noisy TH", 500, 0, 50);
+			TH2F *noisym = new TH2F ("Noisy map", "Noisy Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
+			TH1F *noisyh = new TH1F ("Noisy histo", "Noisy TH", 500, 0, 50);
 			
 			for(int i=0; i<para_staver.size(); i++){
 				noisyh->Fill(para_staver[i].Noisy);  
@@ -1159,14 +1083,14 @@ void MainWindow::stave_parameters(string stavename){
 			string name4="Noisy_"+stavenamed+".png";
 			const char* cname4 = name4.c_str();
 			c5->SaveAs(cname4);		
-
+			delete noisym, noisyh;
 			
 			////////plot noisy masked
 						//set_plot_style();
-			TCanvas *c6 = new TCanvas("Stave","Stave Map",20,10,1000,400);
+			TCanvas *c6 = new TCanvas("Stave6","Stave Map",20,10,1000,400);
 			c6->Divide(1,2);
-			TH2F *noisymm = new TH2F ("Noisy", "Noisy masked Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
-			TH1F *noisymh = new TH1F ("Noisy", "Noisy masked TH", 500, 0, 50);
+			TH2F *noisymm = new TH2F ("Noisy masked map", "Noisy masked Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
+			TH1F *noisymh = new TH1F ("Noisy masked histo", "Noisy masked TH", 500, 0, 50);
 			
 			for(int i=0; i<para_staver.size(); i++){
 				noisymh->Fill(para_staver[i].NoisyM);  
@@ -1186,7 +1110,8 @@ void MainWindow::stave_parameters(string stavename){
 			
 			string name5="Noisy_Masked_"+stavenamed+".png";
 			const char* cname5 = name5.c_str();
-			c6->SaveAs(cname5);					
+			c6->SaveAs(cname5);		
+			delete noisymm, noisymh;	
 }
 
 
