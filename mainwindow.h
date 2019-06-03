@@ -1,0 +1,173 @@
+#ifndef MAINWINDOW_H
+#define MAINWINDOW_H
+
+#include <QMainWindow>
+#include "AlpideDB.h"
+#include "DBHelpers.h"
+#include "utilities.h"
+#include "CernSsoCookiesJar.h"
+#include "AlpideDBEndPoints.h"
+#include <iostream>
+#include <vector>
+#include <QDialog>
+#include <QFile>
+#include <QLabel>
+#include <QMainWindow>
+#include <QPixmap>
+#include <QtCore>
+#include <QtGui>
+#include <deque>
+#include <mutex>
+#include <qapplication.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
+
+
+namespace Ui {
+class MainWindow;
+}
+
+class MainWindow : public QMainWindow
+{
+    Q_OBJECT
+
+public:
+    explicit MainWindow(QWidget *parent = 0);
+    void test(void);
+   // ActivityDB *theActivityTable = new ActivityDB(theDB);
+
+    struct Mreception {
+      float IDDA=-0.1;
+      float IDDD=-0.1;
+      float IDDAC=-0.1;
+      float IDDDC=-0.1;
+      int pixels=-1;
+      std::string name;
+    } ;
+
+    struct MHS {
+      float IDDA=-0.1;
+      float IDDD=-0.1;
+      float IDDAC=-0.1;
+      float IDDDC=-0.1;
+      int pixels=-1;
+    } ;    
+    
+    struct MFast {
+      float IDDA=-0.1;
+      float IDDD=-0.1;
+      //int pixels;
+    } ;    
+    
+    struct MStave {
+      float IDDA=-0.1;
+      float IDDD=-0.1;
+      float IDDAC=-0.1;
+      float IDDDC=-0.1;
+      int pixels=-1;
+      int pixelsth=-1;
+      float ThMax=-0.1;
+      float ThMin=-0.1;
+      float Noise=-0.1;
+      int Noisy=-1;
+      int NoisyM=-1;
+      std::string name;
+      std::string error="\n";
+
+    } ;    
+    
+    struct MQ {
+      float IDDA=-0.1;
+      float IDDD=-0.1;
+      float IDDAC=-0.1;
+      float IDDDC=-0.1;
+      int pixels=-1;
+      std::string name;
+
+    } ;      
+    
+    
+    struct MStaveR {
+      float IDDA=-0.1;
+      float IDDD=-0.1;
+      float IDDAC=-0.1;
+      float IDDDC=-0.1;
+      int pixels=-1;
+      int pixelsth=-1;
+      float ThMax=-0.1;
+      float ThMin=-0.1;
+      float Noise=-0.1;
+      int Noisy=-1;
+      int NoisyM=-1;
+      std::string name;
+      std::string error="\n";
+    } ;   
+    
+    struct MStaveR getmodulepara(AlpideDB *theDB, string hicname, const int index);
+    
+    struct MStaveR getMReceptionDB(AlpideDB *theDB, string hicname, const int index);
+    
+    struct MStaveR getHSDB(AlpideDB *theDB, string hicname, const int index);
+    
+    struct MStaveR getFastDB(AlpideDB *theDB, string hicname, const int index);
+
+    struct MStaveR getStaveDB(AlpideDB *theDB, string hicname, const int index);
+    
+    struct MStaveR getStaveRDB(AlpideDB *theDB, string hicname, const int index);
+    
+
+    void plot_pixel(MStaveR qual, MStaveR reception, MStaveR half, MStaveR stave, MStaveR staver);
+
+    void plot_current(MStaveR qual, MStaveR reception, MStaveR fast, MStaveR half, MStaveR stave, MStaveR staver);
+    
+    void get_module_info(string moduleName);
+    
+    
+    void getstavecompDB(AlpideDB *theDB, string stavename);
+
+    struct MStaveR getMQDB(AlpideDB *theDB, string hicname, const int index);	
+
+    void stave_parameters(std::string stavename);
+    void set_plot_style();
+
+    
+    
+    ~MainWindow();
+
+
+public slots:
+    void on_get_clicked();
+    void on_bad_pixels_clicked();
+    void on_current_clicked();
+    void on_get_stave_clicked();
+    void on_get_module_l1_clicked();
+    void on_get_module_l2_clicked();
+    void on_get_module_l3_clicked();
+    void on_get_module_l4_clicked();
+    void on_get_module_l5_clicked();
+    void on_get_module_l6_clicked();
+    void on_get_module_l7_clicked();
+    void on_get_module_r1_clicked();
+    void on_get_module_r2_clicked();
+    void on_get_module_r3_clicked();
+    void on_get_module_r4_clicked();
+    void on_get_module_r5_clicked();
+    void on_get_module_r6_clicked();
+    void on_get_module_r7_clicked();
+    void on_draw_clicked();
+
+private:
+    Ui::MainWindow *ui;
+};
+
+
+
+
+#endif // MAINWINDOW_H
+
+
+
+
+
+
