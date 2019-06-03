@@ -301,6 +301,21 @@ void MainWindow::on_noisy_pixels_clicked(){
 		
 }
 
+void MainWindow::on_noise_clicked(){
+	string modulename, pic;
+	modulename = ui->moduleID->toPlainText().toStdString().c_str();
+    pic = "Noise_"+modulename+".png";
+	QString qpic;  
+    qpic= QString::fromStdString(pic);
+
+    QGraphicsScene* scene = new QGraphicsScene();
+    QPixmap pixmap(qpic);
+    scene->addPixmap(pixmap);
+    ui->plot1->setScene(scene);
+    ui->plot1->show();
+		
+}
+
 void MainWindow::on_current_clicked(){
 	
 	string modulename, pic;
@@ -536,7 +551,7 @@ void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector
 	  //Draw graphs
 
 	int size_p = int(index.size())-1;
-	float idda[size_p], iddd[size_p], iddac[size_p], idddc[size_p], pixels[size_p], pixelsth[size_p], noisy[size_p], noisym[size_p];
+	float idda[size_p], iddd[size_p], iddac[size_p], idddc[size_p], pixels[size_p], pixelsth[size_p], noisy[size_p], noisym[size_p], noise[size_p];
 	float n[size_p];
 	
 	for(int i=0; i<size_p; i++){
@@ -549,6 +564,7 @@ void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector
 		pixelsth[i]=data[i].pixelsth;
 		noisy[i]=data[i].Noisy;
 		noisym[i]=data[i].NoisyM;
+		noise[i]=data[i].Noise;
 		n[i]=index[i]+1;
 	 	 }
 	  
@@ -675,7 +691,7 @@ void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector
 	
 	  
 	  
-	  //hot pixels plots
+	  //hotpix plots
 	TCanvas *c3 = new TCanvas("Noisypix","Noisypix",20,10,700,500);
 	TMultiGraph *mg2 = new TMultiGraph();
 
@@ -720,7 +736,49 @@ void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector
 	delete plot6, plot7;
 	  	  
 	  	  	  
-	  
+	  //noise plots
+	TCanvas *c4 = new TCanvas("Noisypix","Noisypix",20,10,700,500);
+	TMultiGraph *mg3 = new TMultiGraph();
+
+	TGraph* plot8 = new TGraph(size_p,n, noise);
+	//TGraph* plot8 = new TGraph(size_p,n, noisym);	  
+	plot8->SetMarkerColor(2);
+	plot8->SetMarkerSize(1);
+	plot8->SetMarkerStyle(21);
+	//plot7->SetMarkerColor(3);
+	//plot7->SetMarkerSize(1);
+	//plot7->SetMarkerStyle(21);
+	
+	  	  
+	mg3->Add(plot8);
+	//mg3->Add(plot7);
+	mg3->Draw("AP");
+	mg3->SetTitle(("Noise of "+data[0].name).c_str());
+	
+	mg3->GetXaxis()->SetRangeUser(-0.1,5.9);
+	mg3->GetYaxis()->SetRangeUser(0,noise[0]+20);
+	mg3->GetYaxis()->SetTitle("e-");
+
+	TText *t3 = new TText();
+	t3->SetTextFont(1);
+	t3->SetTextSize(0.025);
+	t3->DrawText(0.8, -(noise[0]+20)*0.08, "Qualification");
+	t3->DrawText(1.8, -(noise[0]+20)*0.88, "Reception");
+	t3->DrawText(2.95, -(noise[0]+20)*0.08, "HS");
+	t3->DrawText(3.9, -(noise[0]+20)*0.08, "Stave");
+	t3->DrawText(4.9, -(noise[0]+20)*0.08, "StaveR");
+	        
+	auto legend3 = new TLegend(0.1,0.75,0.5,0.9);
+	  	  // legend->SetHeader("The Legend Title","C"); // option "C" allows to center the header
+	legend3->AddEntry(plot8,"Noise (0 V)","P");
+	//legend2->AddEntry(plot7,"Noisy pixels masked","P");
+	  	  
+	legend3->Draw();
+	
+	//string name="Current_"+data[0].name+".png";
+	const char* cname3 = ("Noise_"+data[0].name+".png").c_str();
+	c4->SaveAs(cname3);
+	delete plot8;	  
 	  
 }
 
@@ -930,10 +988,10 @@ void MainWindow::stave_parameters(string stavename){
 	for(int i = 0; i<moduleName.size(); i++){
 	//para_staver.push_back(this->getStaveRDB(theDB, moduleName[i], 5));
 		if (ui->comboBox_option->currentIndex()==0){
-			para_staver.push_back(this->getStaveRDB(theDB, moduleName[i],4));
+			para_staver.push_back(this->getStaveRDB(theDB, moduleName[i],3));
 			stavenamed=stavename+"_Qualification";
 			}else{
-				para_staver.push_back(this->getStaveRDB(theDB, moduleName[i],5));
+				para_staver.push_back(this->getStaveRDB(theDB, moduleName[i],4));
 				stavenamed=stavename+"_Reception";
 				}
 		ui->progressBar->setValue(i+1);

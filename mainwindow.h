@@ -83,6 +83,7 @@ public slots:
     void on_get_clicked();
     void on_bad_pixels_clicked();
     void on_noisy_pixels_clicked();
+    void on_noise_clicked();
     void on_current_clicked();
     void on_get_stave_clicked();
     void on_get_module_l1_clicked();
