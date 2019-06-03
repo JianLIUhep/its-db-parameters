@@ -28,8 +28,6 @@
 #include "TStyle.h"
 #include "TColor.h"
 
-
-
 using namespace std;
 
 //ActivityTypeID = 852; //out barrel FPC electrical test
