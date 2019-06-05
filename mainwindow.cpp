@@ -46,20 +46,20 @@ using namespace std;
 //ActivityTypeID = 1201; //Stave reception test
 //ActivityTypeID = 761; //PBs soldering
 
-MainWindow::MainWindow(QWidget *parent) :
+ITSDB::ITSDB(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::ITSDB)
 {
     ui->setupUi(this);
 }
 
-MainWindow::~MainWindow()
+ITSDB::~ITSDB()
 {
     delete ui;
 }
 
 //single module button
-void MainWindow::on_get_clicked()
+void ITSDB::on_get_clicked()
 {
 
 	string moduleName;
@@ -68,9 +68,9 @@ void MainWindow::on_get_clicked()
 
 }
 
-void MainWindow::get_module_info(string moduleName){
+void ITSDB::get_module_info(string moduleName){
 	
-	std::vector<MainWindow::MStaveR> para;
+	std::vector<ITSDB::MStaveR> para;
 	std::vector<float> index;
 	MStaveR para_reception, para_fast, para_HS, para_stave, para_qualification, para_staver;
 	int fDatabasetype=0;
@@ -95,7 +95,7 @@ void MainWindow::get_module_info(string moduleName){
 }
 
 //stave info button
-void MainWindow::on_get_stave_clicked()
+void ITSDB::on_get_stave_clicked()
 {
 
 	string staveName;
@@ -115,7 +115,7 @@ void MainWindow::on_get_stave_clicked()
 
 
 
-void MainWindow::on_get_module_l1_clicked()
+void ITSDB::on_get_module_l1_clicked()
 {
 
 	string moduleName=ui->module_l_1->toPlainText().toStdString().c_str();
@@ -126,7 +126,7 @@ void MainWindow::on_get_module_l1_clicked()
   
 }
 
-void MainWindow::on_get_module_l2_clicked()
+void ITSDB::on_get_module_l2_clicked()
 {
 
 	string moduleName=ui->module_l_2->toPlainText().toStdString().c_str();
@@ -137,7 +137,7 @@ void MainWindow::on_get_module_l2_clicked()
   
 }
 
-void MainWindow::on_get_module_l3_clicked()
+void ITSDB::on_get_module_l3_clicked()
 {
 
 	string moduleName=ui->module_l_3->toPlainText().toStdString().c_str();
@@ -148,7 +148,7 @@ void MainWindow::on_get_module_l3_clicked()
   
 }
 
-void MainWindow::on_get_module_l4_clicked()
+void ITSDB::on_get_module_l4_clicked()
 {
 
 	string moduleName=ui->module_l_4->toPlainText().toStdString().c_str();
@@ -159,7 +159,7 @@ void MainWindow::on_get_module_l4_clicked()
   
 }
 
-void MainWindow::on_get_module_l5_clicked()
+void ITSDB::on_get_module_l5_clicked()
 {
 
 	string moduleName=ui->module_l_5->toPlainText().toStdString().c_str();
@@ -170,7 +170,7 @@ void MainWindow::on_get_module_l5_clicked()
   
 }
 
-void MainWindow::on_get_module_l6_clicked()
+void ITSDB::on_get_module_l6_clicked()
 {
 
 	string moduleName=ui->module_l_6->toPlainText().toStdString().c_str();
@@ -181,7 +181,7 @@ void MainWindow::on_get_module_l6_clicked()
   
 }
 
-void MainWindow::on_get_module_l7_clicked()
+void ITSDB::on_get_module_l7_clicked()
 {
 
 	string moduleName=ui->module_l_7->toPlainText().toStdString().c_str();
@@ -192,7 +192,7 @@ void MainWindow::on_get_module_l7_clicked()
   
 }
 
-void MainWindow::on_get_module_r1_clicked()
+void ITSDB::on_get_module_r1_clicked()
 {
 
 	string moduleName=ui->module_r_1->toPlainText().toStdString().c_str();
@@ -203,7 +203,7 @@ void MainWindow::on_get_module_r1_clicked()
   
 }
 
-void MainWindow::on_get_module_r2_clicked()
+void ITSDB::on_get_module_r2_clicked()
 {
 
 	string moduleName=ui->module_r_2->toPlainText().toStdString().c_str();
@@ -214,7 +214,7 @@ void MainWindow::on_get_module_r2_clicked()
   
 }
 
-void MainWindow::on_get_module_r3_clicked()
+void ITSDB::on_get_module_r3_clicked()
 {
 
 	string moduleName=ui->module_r_3->toPlainText().toStdString().c_str();
@@ -225,7 +225,7 @@ void MainWindow::on_get_module_r3_clicked()
   
 }
 
-void MainWindow::on_get_module_r4_clicked()
+void ITSDB::on_get_module_r4_clicked()
 {
 
 	string moduleName=ui->module_r_4->toPlainText().toStdString().c_str();
@@ -236,7 +236,7 @@ void MainWindow::on_get_module_r4_clicked()
   
 }
 
-void MainWindow::on_get_module_r5_clicked()
+void ITSDB::on_get_module_r5_clicked()
 {
 
 	string moduleName=ui->module_r_5->toPlainText().toStdString().c_str();
@@ -247,7 +247,7 @@ void MainWindow::on_get_module_r5_clicked()
   
 }
 
-void MainWindow::on_get_module_r6_clicked()
+void ITSDB::on_get_module_r6_clicked()
 {
 
 	string moduleName=ui->module_r_6->toPlainText().toStdString().c_str();
@@ -258,7 +258,7 @@ void MainWindow::on_get_module_r6_clicked()
   
 }
 
-void MainWindow::on_get_module_r7_clicked()
+void ITSDB::on_get_module_r7_clicked()
 {
 
 	string moduleName=ui->module_r_7->toPlainText().toStdString().c_str();
@@ -270,7 +270,7 @@ void MainWindow::on_get_module_r7_clicked()
 }
 
 
-void MainWindow::on_bad_pixels_clicked(){
+void ITSDB::on_bad_pixels_clicked(){
 	string modulename, pic;
 	modulename = ui->moduleID->toPlainText().toStdString().c_str();
     pic = "Badpix_"+modulename+".png";
@@ -286,7 +286,7 @@ void MainWindow::on_bad_pixels_clicked(){
 }
 
 
-void MainWindow::on_noisy_pixels_clicked(){
+void ITSDB::on_noisy_pixels_clicked(){
 	string modulename, pic;
 	modulename = ui->moduleID->toPlainText().toStdString().c_str();
     pic = "Noisypix_"+modulename+".png";
@@ -301,7 +301,7 @@ void MainWindow::on_noisy_pixels_clicked(){
 		
 }
 
-void MainWindow::on_noise_clicked(){
+void ITSDB::on_noise_clicked(){
 	string modulename, pic;
 	modulename = ui->moduleID->toPlainText().toStdString().c_str();
     pic = "Noise_"+modulename+".png";
@@ -316,7 +316,7 @@ void MainWindow::on_noise_clicked(){
 		
 }
 
-void MainWindow::on_current_clicked(){
+void ITSDB::on_current_clicked(){
 	
 	string modulename, pic;
 	modulename = ui->moduleID->toPlainText().toStdString().c_str();
@@ -335,7 +335,7 @@ void MainWindow::on_current_clicked(){
 //get the HS
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////
-void MainWindow::addinfo(std::vector<MainWindow::MStaveR> para)
+void ITSDB::addinfo(std::vector<ITSDB::MStaveR> para)
 {
 	if (para[0].error!="No activities exit!"){
 		ui->info_0->setPlainText("IDDA = "+QString::fromStdString(to_string(para[0].IDDA))+" A");
@@ -426,12 +426,12 @@ void MainWindow::addinfo(std::vector<MainWindow::MStaveR> para)
 
 
 
-struct MainWindow::MStaveR MainWindow::getmodulepara(AlpideDB *theDB, string hicname, const int index){
+struct ITSDB::MStaveR ITSDB::getmodulepara(AlpideDB *theDB, string hicname, const int index){
 	
 	ActivityDB *theActivityTable = new ActivityDB(theDB);
 	MStaveR para;
 	int ProjectID = 383;//ITS upgrade project
-	int ActivityTypeID;
+	int ActivityTypeID=601;
     para.name=hicname;
 
 	switch (index){
@@ -460,7 +460,7 @@ struct MainWindow::MStaveR MainWindow::getmodulepara(AlpideDB *theDB, string hic
 	}
 	vector<ActivityDB::activityShort> *act1 = theActivityTable->GetActivityList(ProjectID, ActivityTypeID);
 	  
-	int i=0;
+	unsigned int i=0;
 	size_t pos;
 	 
 	do {
@@ -535,7 +535,7 @@ struct MainWindow::MStaveR MainWindow::getmodulepara(AlpideDB *theDB, string hic
 //get the stave reception
 //
 ////////////////////////////////////////////////////////////////////////////////////////////////
-struct MainWindow::MStaveR MainWindow::getStaveRDB(AlpideDB *theDB, string hicname, const int index)
+struct ITSDB::MStaveR ITSDB::getStaveRDB(AlpideDB *theDB, string hicname, const int index)
 {
 	QString idda,iddac, iddd,idddc, pixel, pixelth, thmax, thmin, noise, noisy, noisym, error;
 	MStaveR para=getmodulepara(theDB, hicname, index);
@@ -546,13 +546,15 @@ struct MainWindow::MStaveR MainWindow::getStaveRDB(AlpideDB *theDB, string hicna
 
 
 
-void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector<float> index){
+void ITSDB::plot_current(std::vector<ITSDB::MStaveR> data, std::vector<float> index){
 	
 	  //Draw graphs
 
-	int size_p = int(index.size())-1;
-	float idda[size_p], iddd[size_p], iddac[size_p], idddc[size_p], pixels[size_p], pixelsth[size_p], noisy[size_p], noisym[size_p], noise[size_p];
-	float n[size_p];
+	
+	const int size_p = int(index.size())-1;
+	//int size=5;
+	float idda[5], iddd[5], iddac[5], idddc[5], pixels[5], pixelsth[5], noisy[5], noisym[5], noise[5];
+	float n[5];
 	
 	for(int i=0; i<size_p; i++){
 		
@@ -643,7 +645,10 @@ void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector
 	const char* cname = ("Current_"+data[0].name+".png").c_str();
 	c1->SaveAs(cname);
 	
-	delete plot, plot1, plot2, plot3;
+	delete plot;
+	delete plot1;
+	delete plot2;
+	delete plot3;
 
 	  //pixels plots
 	TCanvas *c2 = new TCanvas("Badpix","Badpix",20,10,700,500);
@@ -687,7 +692,8 @@ void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector
 	  //string name="Current_"+data[0].name+".png";
 	const char* cname1 = ("Badpix_"+data[0].name+".png").c_str();
 	c2->SaveAs(cname1);
-	delete plot4, plot5;
+	delete plot4;
+	delete plot5;
 	
 	  
 	  
@@ -733,7 +739,8 @@ void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector
 	//string name="Current_"+data[0].name+".png";
 	const char* cname2 = ("Noisypix_"+data[0].name+".png").c_str();
 	c3->SaveAs(cname2);
-	delete plot6, plot7;
+	delete plot6;
+	delete plot7;
 	  	  
 	  	  	  
 	  //noise plots
@@ -786,21 +793,21 @@ void MainWindow::plot_current(std::vector<MainWindow::MStaveR> data, std::vector
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-void MainWindow::getstavecompDB(AlpideDB *theDB, string stavename){
+void ITSDB::getstavecompDB(AlpideDB *theDB, string stavename){
 	
 	std::vector<TChild> halfStaves;
     std::vector<TChild> hics;
 
 	//OL-Stave 519;
-	int g_staveType, g_bareStaveType, g_hsUpperType, g_hsLowerType, g_hicType, HALFSTAVECOMP, NHICS;
+	int g_staveType, g_bareStaveType, g_hsUpperType, g_hsLowerType, g_hicType;
 	g_staveType     = DbGetComponentTypeId(theDB, "Outer Layer Stave");
 	//cout<<"Stave type: "<<g_staveType<<endl;
     g_bareStaveType = DbGetComponentTypeId(theDB, "Outer Layer Stave w/o PB&BB");
     g_hsUpperType   = DbGetComponentTypeId(theDB, "Outer Layer Half-Stave Upper");
     g_hsLowerType   = DbGetComponentTypeId(theDB, "Outer Layer Half-Stave Lower");
     g_hicType = DbGetComponentTypeId(theDB, "Outer Barrel HIC Module");
-    HALFSTAVECOMP   = 8;
-    NHICS           = 14;
+   // HALFSTAVECOMP   = 8;
+    //NHICS           = 14;
 	//cout<<"U type: "<<g_hsUpperType<<endl;
 
 	TChild stave;
@@ -817,22 +824,22 @@ void MainWindow::getstavecompDB(AlpideDB *theDB, string stavename){
 	ui->info_stave->setPlainText("Stave : "+qstavename);
 	
 	std::vector<TChild> staveChildren;
-	int                 nChildren = DbGetListOfChildren(theDB, stave.Id, staveChildren);
-    //cout<<"number: "<<nChildren<<endl;
+	DbGetListOfChildren(theDB, stave.Id, staveChildren);
+    cout<<"number: "<<staveChildren.size()<<endl;
     
     TChild bareStave;
     
-    for (unsigned int i = 0; i < staveChildren.size(); i++) {
+    for (int i = 0; i < int(staveChildren.size()); i++) {
     	if (staveChildren.at(i).Type == g_bareStaveType) {
     		bareStave = staveChildren.at(i);
           //found     = true;
-         // cout<<"Name:"<<bareStave.Name<<endl;
+          cout<<"Name:"<<bareStave.Name<<endl;
     		ui->info_stave->appendPlainText("Bare Stave: "+QString::fromStdString(bareStave.Name));
         	}
       	  }
 
     	std::vector<TChild> bareStaveChildren;
-    	int  nChildrenbare = DbGetListOfChildren(theDB, bareStave.Id, bareStaveChildren);
+    	DbGetListOfChildren(theDB, bareStave.Id, bareStaveChildren);
 	
    // cout<<"number: "<<nChildrenbare<<endl;
     
@@ -853,7 +860,7 @@ void MainWindow::getstavecompDB(AlpideDB *theDB, string stavename){
 
     	for (unsigned int i = 0; i < halfStaves.size(); i++) {
         
-    		int nChildrenhs = DbGetListOfChildren(theDB, halfStaves.at(i).Id, halfStaveChildren);
+    		DbGetListOfChildren(theDB, halfStaves.at(i).Id, halfStaveChildren);
 
     // cout << halfStaves.at(i).Name<<endl;
     		ui->info_stave->appendPlainText("Half stave : "+QString::fromStdString(halfStaves.at(i).Name));
@@ -957,7 +964,7 @@ void MainWindow::getstavecompDB(AlpideDB *theDB, string stavename){
 
 
 //get module parameters for a specific stave
-void MainWindow::stave_parameters(string stavename){
+void ITSDB::stave_parameters(string stavename){
 	  
 	  //string moduleName[14];
 	std::vector<string> moduleName;
@@ -982,10 +989,10 @@ void MainWindow::stave_parameters(string stavename){
 
 	std::vector<MStaveR> para_staver;
 	int fDatabasetype=0;
-    int pixel;
+//    int pixel;
 	AlpideDB *theDB = new AlpideDB(fDatabasetype);
     std::string stavenamed;
-	for(int i = 0; i<moduleName.size(); i++){
+	for(unsigned int i = 0; i<moduleName.size(); i++){
 	//para_staver.push_back(this->getStaveRDB(theDB, moduleName[i], 5));
 		if (ui->comboBox_option->currentIndex()==0){
 			para_staver.push_back(this->getStaveRDB(theDB, moduleName[i],3));
@@ -1007,9 +1014,9 @@ void MainWindow::stave_parameters(string stavename){
 	TH2F *pixelsm = new TH2F ("Badpix map", "Bad Pixels Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
 	TH1F *pixelsh = new TH1F ("Badpix histo", "Bad Pixels", 200, 0, 50000);
 
-	for(int i=0; i<para_staver.size(); i++){
+	for(unsigned int i=0; i<para_staver.size(); i++){
 		pixelsh->Fill(para_staver[i].pixels);  
-		if(i>=0 & i<=6){
+		if((i>=0) & (i<=6)){
 	      pixelsm->SetBinContent(i+1,1,para_staver[i].pixels);	
 		  } else {
 		      pixelsm->SetBinContent(i-6,2,para_staver[i].pixels);	
@@ -1025,7 +1032,8 @@ void MainWindow::stave_parameters(string stavename){
 	string name="Bad_Pixels_"+stavenamed+".png";
 	const char* cname = name.c_str();
 	c1->SaveAs(cname);
-	delete pixelsm, pixelsh;
+	delete pixelsm;
+	delete pixelsh;
 	////////plot th max
 		//set_plot_style();
 	TCanvas *c2 = new TCanvas("Stave2","Stave Map",20,10,1000,400);
@@ -1033,9 +1041,9 @@ void MainWindow::stave_parameters(string stavename){
 	TH2F *thmaxm = new TH2F ("THMax map", "Maximum chip TH Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
 	TH1F *thmaxh = new TH1F ("THMax histo", "Maximum chip TH", 200, 0, 200);
 
-	for(int i=0; i<para_staver.size(); i++){
+	for(unsigned int i=0; i<para_staver.size(); i++){
 		thmaxh->Fill(para_staver[i].ThMax);  
-		if(i>=0 & i<=6){
+		if((i>=0) & (i<=6)){
 			thmaxm->SetBinContent(i+1,1,para_staver[i].ThMax);	
 		} else {
 			thmaxm->SetBinContent(i-6,2,para_staver[i].ThMax);	
@@ -1052,7 +1060,8 @@ void MainWindow::stave_parameters(string stavename){
 	string name1="Max_CHIP_TH_"+stavenamed+".png";
 	const char* cname1 = name1.c_str();
 	c2->SaveAs(cname1);
-	delete thmaxm, thmaxh;
+	delete thmaxm;
+	delete thmaxh;
 		////////plot th min
 			//set_plot_style();
 	TCanvas *c3 = new TCanvas("Stave3","Stave Map",20,10,1000,400);
@@ -1060,9 +1069,9 @@ void MainWindow::stave_parameters(string stavename){
 	TH2F *thminm = new TH2F ("THMin map", "Minimum chip TH Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
 	TH1F *thminh = new TH1F ("THMin histo", "Minimum chip TH", 200, 0, 200);
 	
-	for(int i=0; i<para_staver.size(); i++){
+	for(unsigned int i=0; i<para_staver.size(); i++){
 		thminh->Fill(para_staver[i].ThMin);  
-		if(i>=0 & i<=6){
+		if((i>=0) & (i<=6)){
 			thminm->SetBinContent(i+1,1,para_staver[i].ThMin);	
 		} else {
 			thminm->SetBinContent(i-6,2,para_staver[i].ThMin);	
@@ -1079,7 +1088,8 @@ void MainWindow::stave_parameters(string stavename){
 	string name2="Min_CHIP_TH_"+stavenamed+".png";
 	const char* cname2 = name2.c_str();
 	c3->SaveAs(cname2);		
-	delete thminm, thminh;
+	delete thminm;
+	delete thminh;
 	
 			
 			////////plot noise
@@ -1089,9 +1099,9 @@ void MainWindow::stave_parameters(string stavename){
 	TH2F *noisem = new TH2F ("Noise map", "Noise Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
 	TH1F *noiseh = new TH1F ("Noise histo", "Noise TH", 500, 0, 50);
 	
-	for(int i=0; i<para_staver.size(); i++){
+	for(unsigned int i=0; i<para_staver.size(); i++){
 		noiseh->Fill(para_staver[i].Noise);  
-		if(i>=0 & i<=6){
+		if((i>=0) & (i<=6)){
 			noisem->SetBinContent(i+1,1,para_staver[i].Noise);	
 		} else {
 			noisem->SetBinContent(i-6,2,para_staver[i].Noise);	
@@ -1108,7 +1118,8 @@ void MainWindow::stave_parameters(string stavename){
 	string name3="Noise_"+stavenamed+".png";
 	const char* cname3 = name3.c_str();
 	c4->SaveAs(cname3);		
-	delete noisem, noiseh;
+	delete noisem;
+	delete noiseh;
 			
 			////////plot noisy
 						//set_plot_style();
@@ -1117,9 +1128,9 @@ void MainWindow::stave_parameters(string stavename){
 	TH2F *noisym = new TH2F ("Noisy map", "Noisy Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
 	TH1F *noisyh = new TH1F ("Noisy histo", "Noisy TH", 500, 0, 50);
 	
-	for(int i=0; i<para_staver.size(); i++){
+	for(unsigned int i=0; i<para_staver.size(); i++){
 		noisyh->Fill(para_staver[i].Noisy);  
-		if(i>=0 & i<=6){
+		if((i>=0) & (i<=6)){
 			noisym->SetBinContent(i+1,1,para_staver[i].Noisy);	
 		} else {
 			noisym->SetBinContent(i-6,2,para_staver[i].Noisy);	
@@ -1136,7 +1147,8 @@ void MainWindow::stave_parameters(string stavename){
 	string name4="Noisy_"+stavenamed+".png";
 	const char* cname4 = name4.c_str();
 	c5->SaveAs(cname4);		
-	delete noisym, noisyh;
+	delete noisym;
+	delete noisyh;
 	
 	////////plot noisy masked
 	//set_plot_style();
@@ -1145,9 +1157,9 @@ void MainWindow::stave_parameters(string stavename){
 	TH2F *noisymm = new TH2F ("Noisy masked map", "Noisy masked Map", 7, -0.5, 6.5, 2, -0.5, 1.5);
 	TH1F *noisymh = new TH1F ("Noisy masked histo", "Noisy masked TH", 500, 0, 50);
 	
-	for(int i=0; i<para_staver.size(); i++){
+	for(unsigned int i=0; i<para_staver.size(); i++){
 		noisymh->Fill(para_staver[i].NoisyM);  
-		if(i>=0 & i<=6){
+		if((i>=0) & (i<=6)){
 			noisymm->SetBinContent(i+1,1,para_staver[i].NoisyM);	
 		} else {
 			noisymm->SetBinContent(i-6,2,para_staver[i].NoisyM);	
@@ -1164,11 +1176,12 @@ void MainWindow::stave_parameters(string stavename){
 	string name5="Noisy_Masked_"+stavenamed+".png";
 	const char* cname5 = name5.c_str();
 	c6->SaveAs(cname5);		
-	delete noisymm, noisymh;	
+	delete noisymm;
+	delete noisymh;	
 }		
 
 
-void MainWindow::on_draw_clicked(){
+void ITSDB::on_draw_clicked(){
 	
     string stavename, pic;
 	stavename = ui->stave_id->toPlainText().toStdString().c_str();
@@ -1220,7 +1233,7 @@ void MainWindow::on_draw_clicked(){
 
 
 
-void MainWindow::set_plot_style()
+void ITSDB::set_plot_style()
 {
     const Int_t NRGBs = 5;
     const Int_t NCont = 255;

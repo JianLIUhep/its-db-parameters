@@ -25,15 +25,15 @@
 
 
 namespace Ui {
-class MainWindow;
+class ITSDB;
 }
 
-class MainWindow : public QMainWindow
+class ITSDB : public QMainWindow
 {
     Q_OBJECT
 
 public:
-    explicit MainWindow(QWidget *parent = 0);
+    explicit ITSDB(QWidget *parent = 0);
 
     struct MStaveR {
       float IDDA=-0.1;
@@ -54,7 +54,7 @@ public:
     struct MStaveR getmodulepara(AlpideDB *theDB, string hicname, const int index);
     
     
-    void addinfo(std::vector<MainWindow::MStaveR> para);
+    void addinfo(std::vector<MStaveR> para);
 
     
     struct MStaveR getStaveRDB(AlpideDB *theDB, string hicname, const int index);
@@ -76,7 +76,7 @@ public:
 
     
     
-    ~MainWindow();
+    ~ITSDB();
 
 
 public slots:
@@ -103,7 +103,7 @@ public slots:
     void on_draw_clicked();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::ITSDB *ui;
 };
 
 

@@ -19,11 +19,7 @@ set(CMAKE_AUTOUIC ON)
 #add_directory(/home/alice/alice/new-alpide-software/DataBaseSrc)
 
 set(SRCS
-  /home/alice/alice/new-alpide-software/DataBaseSrc/AlpideDB.cpp
-  /home/alice/alice/new-alpide-software/DataBaseSrc/AlpideDBEndPoints.cpp
-  /home/alice/alice/new-alpide-software/DataBaseSrc/AlpideDBManager.cpp
-  /home/alice/alice/new-alpide-software/DataBaseSrc/CernSsoCookiesJar.cpp
-  /home/alice/alice/new-alpide-software/DataBaseSrc/utilities.cpp
+
   main.cpp
   mainwindow.cpp
 )
